@@ -8,11 +8,11 @@
 package main
 
 import (
-"fmt"
-"time"
-"io/ioutil"
-"strings"
-"strconv"
+    "fmt"
+    "time"
+    "io/ioutil"
+    "strings"
+    "strconv"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
         fmt.Printf("\r%s | %s", getBatteryInfo(), getTimeStamp())
         time.Sleep(500 * time.Millisecond)
     }
-    
+
 
 }
 
@@ -66,6 +66,17 @@ func getBatteryInfo() string {
         return "ERROR WITH BATTERY INFO"
     }
 
-    
-    return fmt.Sprintf("Battery: %03d%% ", percent)
+    //Get charging/discharging status
+    status := fields[1][20:]
+
+    if status == "Charging" {
+        status = "(+++)"
+    } else  if status == "Discharging" {
+        status = "(---)"
+    } else {
+        status = "(***)"
+    }
+
+
+    return fmt.Sprintf("Battery: %03d%% %s", percent, status)
 }
