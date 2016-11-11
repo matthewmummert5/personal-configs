@@ -16,11 +16,32 @@ import (
 )
 
 func main() {
+    var TimeStamp string
+    var count int = 0
 
-    for true {
-        fmt.Printf("\r%s | %s", getBatteryInfo(), getTimeStamp())
+    //Get initial battery charge information
+    BatteryInfo := getBatteryInfo()
+
+    //Do this forever
+    for {
+
+        //Check battery info once every 5 seconds.
+        if count >= 10 {
+            BatteryInfo = getBatteryInfo()
+            count = 0
+        }
+
+        //Check the timestamp twice per second
+        TimeStamp = getTimeStamp()
+
+        //print the battery charge information and timestamp
+        fmt.Printf("%s | %s\r", BatteryInfo, TimeStamp)
+
+        //Sleep for a half second.
         time.Sleep(500 * time.Millisecond)
-    }
+
+        count++
+    } //end infinite for
 
 
 }
