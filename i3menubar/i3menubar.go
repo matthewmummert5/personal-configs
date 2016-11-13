@@ -22,7 +22,7 @@ func main() {
     //Get initial battery charge information
     BatteryInfo := getBatteryInfo()
 
-    //Do this forever
+    //Infinite loop. Do this forever
     for {
 
         //Check battery info once every 5 seconds.
@@ -40,6 +40,7 @@ func main() {
         //Sleep for a half second.
         time.Sleep(500 * time.Millisecond)
 
+        //Increment counter for checking battery charge status
         count++
     } //end infinite for
 
@@ -64,19 +65,22 @@ func getTimeStamp() string {
     return fmt.Sprintf("%02d-%02d-%04d | %02d:%02d:%02d ", month, day, year, hour, minute, second)
 }
 
-//This function gets the current battery charge % from
+//This function gets the current battery charge status from
 // "/sys/class/power_supply/BAT1/uevent"
 func getBatteryInfo() string {
 
+    //Read all the bytes of the linux system power supply information file into the variable, b
     b, err := ioutil.ReadFile("/sys/class/power_supply/BAT1/uevent")
+
+    //Check if reading the file failed
     if err != nil {
         return "ERROR WITH BATTERY INFO"
     }
 
-    //convert the raw bytes of the file to a unicode string
+    //convert the raw bytes of the file to a unicode string, s
     s := string(b)
 
-    //split the string up into seperate fields by new line characters
+    //split the string up into an array of strings by new line characters
     fields := strings.Split(s, "\n")
 
 
@@ -87,12 +91,12 @@ func getBatteryInfo() string {
         return "ERROR WITH BATTERY INFO"
     }
 
-    //Get charging/discharging status
+    //Get charging/discharging status from the second line of the file, starting on character 20
     status := fields[1][20:]
 
     if status == "Charging" {
         status = "(+++)"
-    } else  if status == "Discharging" {
+    } else if status == "Discharging" {
         status = "(---)"
     } else {
         status = "(***)"
