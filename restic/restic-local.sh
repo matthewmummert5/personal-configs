@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Load configuration
-source $HOME/restic-env.sh
+export RESTIC_REPOSITORY="/media/$USER/Offline Backup/Backups/Restic/$(hostname)"
+export RESTIC_PASSWORD_COMMAND="rage -d -i $HOME/age-id-yubikey $HOME/.local/share/gopass/stores/root/pop-os/RESTIC_PASSWORD.age"
 
 # Set log file
-LOGFILE="$HOME/.restic-backup.log"
+LOGFILE="$HOME/.restic-local-backup.log"
 
 # Function to log messages
 log() {
@@ -14,10 +15,10 @@ log() {
 # Start backup
 log "Starting backup process"
 
-# Perform backup with exclusions
+# Perform backup from backup file list
 restic backup \
     --verbose \
-    --files-from /home/username/.backup.list \
+    --files-from $HOME/.backup.list \
     --tag "$(date +%Y-%m-%d)" \
     2>&1 | tee -a "$LOGFILE"
 
@@ -38,3 +39,6 @@ restic forget \
     2>&1 | tee -a "$LOGFILE"
 
 log "Backup and cleanup completed"
+
+unset RESTIC_REPOSITORY
+unset RESTIC_PASSWORD_COMMAND
